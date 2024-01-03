@@ -339,7 +339,7 @@ dependencies = [
  "bitflags 1.3.2",
  "bytes",
  "futures-util",
- "http",
+ "http 0.2.11",
  "http-body",
  "hyper",
  "itoa",
@@ -365,7 +365,7 @@ dependencies = [
  "async-trait",
  "bytes",
  "futures-util",
- "http",
+ "http 0.2.11",
  "http-body",
  "mime",
  "rustversion",
@@ -2144,7 +2144,7 @@ dependencies = [
  "futures-timer",
  "futures-util",
  "hashers",
- "http",
+ "http 0.2.11",
  "instant",
  "jsonwebtoken",
  "once_cell",
@@ -2613,7 +2613,7 @@ dependencies = [
  "futures-core",
  "futures-sink",
  "futures-util",
- "http",
+ "http 0.2.11",
  "indexmap 2.1.0",
  "slab",
  "tokio",
@@ -2679,7 +2679,7 @@ dependencies = [
  "base64 0.21.5",
  "bytes",
  "headers-core",
- "http",
+ "http 0.2.11",
  "httpdate",
  "mime",
  "sha1",
@@ -2691,7 +2691,7 @@ version = "0.2.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "e7f66481bfee273957b1f20485a4ff3362987f85b2c236580d81b4eb7a326429"
 dependencies = [
- "http",
+ "http 0.2.11",
 ]
 
 [[package]]
@@ -2791,13 +2791,24 @@ dependencies = [
 ]
 
 [[package]]
+name = "http"
+version = "1.0.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "b32afd38673a8016f7c9ae69e5af41a58f81b1d31689040f2f1959594ce194ea"
+dependencies = [
+ "bytes",
+ "fnv",
+ "itoa",
+]
+
+[[package]]
 name = "http-body"
 version = "0.4.5"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "d5f38f16d184e36f2408a55281cd658ecbd3ca05cce6d6510a176eca393e26d1"
 dependencies = [
  "bytes",
- "http",
+ "http 0.2.11",
  "pin-project-lite",
 ]
 
@@ -2824,7 +2835,7 @@ dependencies = [
  "futures-core",
  "futures-util",
  "h2",
- "http",
+ "http 0.2.11",
  "http-body",
  "httparse",
  "httpdate",
@@ -2844,7 +2855,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "ec3efd23720e2049821a693cbc7e65ea87c72f1c58ff2f9522ff332b1491e590"
 dependencies = [
  "futures-util",
- "http",
+ "http 0.2.11",
  "hyper",
  "rustls",
  "tokio",
@@ -2901,23 +2912,70 @@ dependencies = [
 
 [[package]]
 name = "ibc"
-version = "0.48.1"
+version = "0.47.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "429b6aca6624a9364878e28c90311438c2621a8270942d80732b2651ac38ac74"
+checksum = "184eb22140cb4143bbcf7ddc8fdfeb9cc058ef73a6066f8ea78162e69d3565d1"
+dependencies = [
+ "bytes",
+ "derive_more",
+ "displaydoc",
+ "ibc-derive 0.3.0",
+ "ibc-proto 0.37.1",
+ "ics23",
+ "num-traits 0.2.17",
+ "primitive-types",
+ "prost 0.12.3",
+ "serde 1.0.193",
+ "serde-json-wasm",
+ "serde_derive",
+ "sha2 0.10.8",
+ "subtle-encoding",
+ "tendermint",
+ "tendermint-light-client-verifier",
+ "tendermint-proto",
+ "time",
+ "tracing",
+ "uint",
+]
+
+[[package]]
+name = "ibc"
+version = "0.48.1"
 dependencies = [
  "ibc-apps",
  "ibc-clients",
  "ibc-core",
  "ibc-core-host-cosmos",
- "ibc-derive",
+ "ibc-derive 0.4.0",
  "ibc-primitives",
+]
+
+[[package]]
+name = "ibc-app-nft-transfer"
+version = "0.48.1"
+dependencies = [
+ "ibc-app-nft-transfer-types",
+ "ibc-core",
+ "serde-json-wasm",
+]
+
+[[package]]
+name = "ibc-app-nft-transfer-types"
+version = "0.48.1"
+dependencies = [
+ "derive_more",
+ "displaydoc",
+ "http 1.0.0",
+ "ibc-core",
+ "ibc-proto 0.39.1",
+ "mime",
+ "serde 1.0.193",
+ "serde-json-wasm",
 ]
 
 [[package]]
 name = "ibc-app-transfer"
 version = "0.48.1"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "b177b343385d9654d99be4709b5ed1574d41f91dfa4044b2d26d688be4179d7c"
 dependencies = [
  "ibc-app-transfer-types",
  "ibc-core",
@@ -2927,13 +2985,11 @@ dependencies = [
 [[package]]
 name = "ibc-app-transfer-types"
 version = "0.48.1"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "95f92a3eda225e5c86e7bb6501c95986583ac541c4369d3c528349d81390f947"
 dependencies = [
  "derive_more",
  "displaydoc",
  "ibc-core",
- "ibc-proto",
+ "ibc-proto 0.39.1",
  "primitive-types",
  "serde 1.0.193",
  "uint",
@@ -2942,17 +2998,14 @@ dependencies = [
 [[package]]
 name = "ibc-apps"
 version = "0.48.1"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "f4be40d55ed2dea9f2d05b902a3586f20850c723e4bdbfc4fb0ebe7a66ca5e40"
 dependencies = [
+ "ibc-app-nft-transfer",
  "ibc-app-transfer",
 ]
 
 [[package]]
 name = "ibc-client-tendermint"
 version = "0.48.1"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "119aa5873214228bf69bded3f20022b9ae1bc35b6841d295afcd73e53db05ccf"
 dependencies = [
  "ibc-client-tendermint-types",
  "ibc-core-client",
@@ -2960,7 +3013,6 @@ dependencies = [
  "ibc-core-handler-types",
  "ibc-core-host",
  "ibc-primitives",
- "prost 0.12.3",
  "serde 1.0.193",
  "tendermint",
  "tendermint-light-client-verifier",
@@ -2969,17 +3021,13 @@ dependencies = [
 [[package]]
 name = "ibc-client-tendermint-types"
 version = "0.48.1"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "6f21679016931b332b295a761e65cc122dc6fbfb98444148b681ad3aaa474665"
 dependencies = [
- "bytes",
  "displaydoc",
  "ibc-core-client-types",
  "ibc-core-commitment-types",
  "ibc-core-host-types",
  "ibc-primitives",
- "ibc-proto",
- "prost 0.12.3",
+ "ibc-proto 0.39.1",
  "serde 1.0.193",
  "tendermint",
  "tendermint-light-client-verifier",
@@ -2989,8 +3037,6 @@ dependencies = [
 [[package]]
 name = "ibc-clients"
 version = "0.48.1"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "685c660323e93107a136aa3dbc412b7fa2eafd315c2fe71184096a43800f8ca5"
 dependencies = [
  "ibc-client-tendermint",
 ]
@@ -2998,8 +3044,6 @@ dependencies = [
 [[package]]
 name = "ibc-core"
 version = "0.48.1"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "100d9d0aa67432c5078a8a1c818e3fc990a193be6d35ed0abeda5b340d16c1da"
 dependencies = [
  "ibc-core-channel",
  "ibc-core-client",
@@ -3014,8 +3058,6 @@ dependencies = [
 [[package]]
 name = "ibc-core-channel"
 version = "0.48.1"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "7ebaa37629ac029f914dfe552ab5dad01ddb240ec885ed0ae68221cbea4e9bfc"
 dependencies = [
  "ibc-core-channel-types",
  "ibc-core-client",
@@ -3025,14 +3067,11 @@ dependencies = [
  "ibc-core-host",
  "ibc-core-router",
  "ibc-primitives",
- "prost 0.12.3",
 ]
 
 [[package]]
 name = "ibc-core-channel-types"
 version = "0.48.1"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "aa2ba72c56c411b1e0ce6dc3f5e1fa1de9e6c84891f425b7be8a9e1705964378"
 dependencies = [
  "derive_more",
  "displaydoc",
@@ -3041,8 +3080,7 @@ dependencies = [
  "ibc-core-connection-types",
  "ibc-core-host-types",
  "ibc-primitives",
- "ibc-proto",
- "prost 0.12.3",
+ "ibc-proto 0.39.1",
  "serde 1.0.193",
  "sha2 0.10.8",
  "subtle-encoding",
@@ -3052,8 +3090,6 @@ dependencies = [
 [[package]]
 name = "ibc-core-client"
 version = "0.48.1"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "06c4fac8e05201795073dee8c93d5afe9dfeac9aec2412b4a2b0c5f0d1e1d725"
 dependencies = [
  "ibc-core-client-context",
  "ibc-core-client-types",
@@ -3061,14 +3097,11 @@ dependencies = [
  "ibc-core-handler-types",
  "ibc-core-host",
  "ibc-primitives",
- "prost 0.12.3",
 ]
 
 [[package]]
 name = "ibc-core-client-context"
 version = "0.48.1"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "6b82abd9489021730d59ab2d00e9438d3711e8e78ecba4d083b64f833301682b"
 dependencies = [
  "derive_more",
  "displaydoc",
@@ -3076,9 +3109,8 @@ dependencies = [
  "ibc-core-commitment-types",
  "ibc-core-handler-types",
  "ibc-core-host-types",
- "ibc-derive",
+ "ibc-derive 0.4.0",
  "ibc-primitives",
- "prost 0.12.3",
  "subtle-encoding",
  "tendermint",
 ]
@@ -3086,16 +3118,13 @@ dependencies = [
 [[package]]
 name = "ibc-core-client-types"
 version = "0.48.1"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "bafdbf6db5dab4c8ad610b6940e23b4f8abd0a6ac5e8e2801415a95defd4a583"
 dependencies = [
  "derive_more",
  "displaydoc",
  "ibc-core-commitment-types",
  "ibc-core-host-types",
  "ibc-primitives",
- "ibc-proto",
- "prost 0.12.3",
+ "ibc-proto 0.39.1",
  "serde 1.0.193",
  "subtle-encoding",
  "tendermint",
@@ -3104,15 +3133,12 @@ dependencies = [
 [[package]]
 name = "ibc-core-commitment-types"
 version = "0.48.1"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "ed4256b0216fc49024bac7e01c61b9bb055e31914ffe9ce6f468d7ce496a9357"
 dependencies = [
  "derive_more",
  "displaydoc",
  "ibc-primitives",
- "ibc-proto",
+ "ibc-proto 0.39.1",
  "ics23",
- "prost 0.12.3",
  "serde 1.0.193",
  "subtle-encoding",
 ]
@@ -3120,22 +3146,17 @@ dependencies = [
 [[package]]
 name = "ibc-core-connection"
 version = "0.48.1"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "48e237b70b9ba0177a4e59ac9048fffac2ac44c334703cc0ae403ad221450850"
 dependencies = [
  "ibc-core-client",
  "ibc-core-connection-types",
  "ibc-core-handler-types",
  "ibc-core-host",
  "ibc-primitives",
- "prost 0.12.3",
 ]
 
 [[package]]
 name = "ibc-core-connection-types"
 version = "0.48.1"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "ca841416fa29626423917099092f3698ae2735074cb3fe42936ddf6b2ccbf2f7"
 dependencies = [
  "derive_more",
  "displaydoc",
@@ -3143,8 +3164,7 @@ dependencies = [
  "ibc-core-commitment-types",
  "ibc-core-host-types",
  "ibc-primitives",
- "ibc-proto",
- "prost 0.12.3",
+ "ibc-proto 0.39.1",
  "serde 1.0.193",
  "subtle-encoding",
  "tendermint",
@@ -3153,8 +3173,6 @@ dependencies = [
 [[package]]
 name = "ibc-core-handler"
 version = "0.48.1"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "a47e5e5a006aa0fc87ec3f5fb1e0ef6dd5aeea5079fa927d799d526c44329987"
 dependencies = [
  "ibc-core-channel",
  "ibc-core-client",
@@ -3169,8 +3187,6 @@ dependencies = [
 [[package]]
 name = "ibc-core-handler-types"
 version = "0.48.1"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "9e3d59a8a5eb2069530c42783b4fef63472a89e0e9242334351df1bb58aaf542"
 dependencies = [
  "derive_more",
  "displaydoc",
@@ -3181,8 +3197,7 @@ dependencies = [
  "ibc-core-host-types",
  "ibc-core-router-types",
  "ibc-primitives",
- "ibc-proto",
- "prost 0.12.3",
+ "ibc-proto 0.39.1",
  "serde 1.0.193",
  "subtle-encoding",
  "tendermint",
@@ -3191,8 +3206,6 @@ dependencies = [
 [[package]]
 name = "ibc-core-host"
 version = "0.48.1"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "7aa63c895c0e5a75e42fe859b8fd4250c12bfa8b9c6b114f94c927ecfad38a03"
 dependencies = [
  "derive_more",
  "displaydoc",
@@ -3204,15 +3217,12 @@ dependencies = [
  "ibc-core-handler-types",
  "ibc-core-host-types",
  "ibc-primitives",
- "prost 0.12.3",
  "subtle-encoding",
 ]
 
 [[package]]
 name = "ibc-core-host-cosmos"
 version = "0.48.1"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "1a325862af6c20b0df3d27c072a2d802a7232dc1666214d738cdfbd9a9c99720"
 dependencies = [
  "derive_more",
  "displaydoc",
@@ -3225,8 +3235,7 @@ dependencies = [
  "ibc-core-handler-types",
  "ibc-core-host-types",
  "ibc-primitives",
- "ibc-proto",
- "prost 0.12.3",
+ "ibc-proto 0.39.1",
  "serde 1.0.193",
  "sha2 0.10.8",
  "subtle-encoding",
@@ -3236,8 +3245,6 @@ dependencies = [
 [[package]]
 name = "ibc-core-host-types"
 version = "0.48.1"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "616955da310febbe93c0569a2feebd9f57cafed3eee5a56b0c3bb953a75f6089"
 dependencies = [
  "derive_more",
  "displaydoc",
@@ -3248,8 +3255,6 @@ dependencies = [
 [[package]]
 name = "ibc-core-router"
 version = "0.48.1"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "31fe115da73e0616bdb44400fa6b11ca251648d070c4ff419d58e27804d30243"
 dependencies = [
  "derive_more",
  "displaydoc",
@@ -3257,26 +3262,43 @@ dependencies = [
  "ibc-core-host-types",
  "ibc-core-router-types",
  "ibc-primitives",
- "prost 0.12.3",
  "subtle-encoding",
 ]
 
 [[package]]
 name = "ibc-core-router-types"
 version = "0.48.1"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "4d1fbb0bbbdeafa7ac989ba1693ed46d22e0e3eb0bdae478544e31157a4fdba6"
 dependencies = [
  "derive_more",
  "displaydoc",
  "ibc-core-host-types",
  "ibc-primitives",
- "ibc-proto",
- "ics23",
- "prost 0.12.3",
+ "ibc-proto 0.39.1",
  "serde 1.0.193",
  "subtle-encoding",
  "tendermint",
+]
+
+[[package]]
+name = "ibc-derive"
+version = "0.3.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "92f1528535e9ca495badb76c143bdd4763c1c9d987f59d1f8b47963ba0c11674"
+dependencies = [
+ "darling",
+ "proc-macro2",
+ "quote",
+ "syn 2.0.39",
+]
+
+[[package]]
+name = "ibc-derive"
+version = "0.4.0"
+dependencies = [
+ "darling",
+ "proc-macro2",
+ "quote",
+ "syn 2.0.39",
 ]
 
 [[package]]
@@ -3294,12 +3316,10 @@ dependencies = [
 [[package]]
 name = "ibc-primitives"
 version = "0.48.1"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "d5edea4685267fd68514c87e7aa3a62712340c4cff6903f088a9ab571428a08a"
 dependencies = [
  "derive_more",
  "displaydoc",
- "ibc-proto",
+ "ibc-proto 0.39.1",
  "prost 0.12.3",
  "serde 1.0.193",
  "tendermint",
@@ -3308,9 +3328,24 @@ dependencies = [
 
 [[package]]
 name = "ibc-proto"
-version = "0.38.0"
+version = "0.37.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "93cbf4cbe9e5113cc7c70f3208a7029b2205c629502cbb2ae7ea0a09a97d3005"
+checksum = "63042806bb2f662ca1c68026231900cfe13361136ddfd0dd09bcb315056a22b8"
+dependencies = [
+ "base64 0.21.5",
+ "bytes",
+ "flex-error",
+ "ics23",
+ "prost 0.12.3",
+ "serde 1.0.193",
+ "subtle-encoding",
+ "tendermint-proto",
+]
+
+[[package]]
+name = "ibc-proto"
+version = "0.39.1"
+source = "git+https://github.com/heliaxdev/ibc-proto-rs?branch=yuji/feat/ics721-impl#b60972f15585c417c2745344c2844444824524fa"
 dependencies = [
  "base64 0.21.5",
  "bytes",
@@ -3325,17 +3360,12 @@ dependencies = [
 [[package]]
 name = "ibc-testkit"
 version = "0.48.1"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "f550c91648f3db6474880e18cd2bd294096a99b30621aa01a9059b71e3612d98"
 dependencies = [
- "bytes",
  "derive_more",
  "displaydoc",
- "ibc",
- "ibc-proto",
+ "ibc 0.48.1",
+ "ibc-proto 0.39.1",
  "parking_lot",
- "primitive-types",
- "prost 0.12.3",
  "subtle-encoding",
  "tendermint",
  "tendermint-testgen",
@@ -4105,7 +4135,7 @@ dependencies = [
  "bytes",
  "encoding_rs",
  "futures-util",
- "http",
+ "http 0.2.11",
  "httparse",
  "log",
  "memchr",
@@ -4122,7 +4152,7 @@ checksum = "e5ce46fe64a9d73be07dcbe690a38ce1b293be448fd8ce1e6c1b8062c9f72c6a"
 
 [[package]]
 name = "namada"
-version = "0.30.0"
+version = "0.29.0"
 dependencies = [
  "assert_matches",
  "async-trait",
@@ -4194,7 +4224,7 @@ dependencies = [
 
 [[package]]
 name = "namada_apps"
-version = "0.30.0"
+version = "0.29.0"
 dependencies = [
  "ark-serialize",
  "ark-std",
@@ -4284,7 +4314,7 @@ dependencies = [
 
 [[package]]
 name = "namada_benchmarks"
-version = "0.30.0"
+version = "0.29.0"
 dependencies = [
  "borsh",
  "borsh-ext",
@@ -4300,7 +4330,7 @@ dependencies = [
 
 [[package]]
 name = "namada_core"
-version = "0.30.0"
+version = "0.29.0"
 dependencies = [
  "ark-bls12-381",
  "ark-serialize",
@@ -4315,8 +4345,8 @@ dependencies = [
  "ethabi",
  "ethbridge-structs",
  "eyre",
- "ibc",
- "ibc-derive",
+ "ibc 0.48.1",
+ "ibc-derive 0.4.0 (registry+https://github.com/rust-lang/crates.io-index)",
  "ibc-testkit",
  "ics23",
  "impl-num-traits",
@@ -4358,7 +4388,7 @@ dependencies = [
 
 [[package]]
 name = "namada_encoding_spec"
-version = "0.30.0"
+version = "0.29.0"
 dependencies = [
  "borsh",
  "itertools 0.10.5",
@@ -4369,7 +4399,7 @@ dependencies = [
 
 [[package]]
 name = "namada_ethereum_bridge"
-version = "0.30.0"
+version = "0.29.0"
 dependencies = [
  "assert_matches",
  "borsh",
@@ -4388,14 +4418,13 @@ dependencies = [
  "tendermint",
  "tendermint-proto",
  "tendermint-rpc",
- "thiserror",
  "toml 0.5.11",
  "tracing",
 ]
 
 [[package]]
 name = "namada_examples"
-version = "0.30.0"
+version = "0.29.0"
 dependencies = [
  "masp_proofs",
  "namada_sdk",
@@ -4406,10 +4435,11 @@ dependencies = [
 
 [[package]]
 name = "namada_light_sdk"
-version = "0.30.0"
+version = "0.29.0"
 dependencies = [
  "borsh",
  "borsh-ext",
+ "ibc 0.47.0",
  "namada_core",
  "namada_sdk",
  "prost 0.12.3",
@@ -4420,7 +4450,7 @@ dependencies = [
 
 [[package]]
 name = "namada_macros"
-version = "0.30.0"
+version = "0.29.0"
 dependencies = [
  "proc-macro2",
  "quote",
@@ -4429,7 +4459,7 @@ dependencies = [
 
 [[package]]
 name = "namada_proof_of_stake"
-version = "0.30.0"
+version = "0.29.0"
 dependencies = [
  "assert_matches",
  "borsh",
@@ -4451,7 +4481,7 @@ dependencies = [
 
 [[package]]
 name = "namada_sdk"
-version = "0.30.0"
+version = "0.29.0"
 dependencies = [
  "assert_matches",
  "async-trait",
@@ -4502,7 +4532,7 @@ dependencies = [
 
 [[package]]
 name = "namada_test_utils"
-version = "0.30.0"
+version = "0.29.0"
 dependencies = [
  "borsh",
  "namada_core",
@@ -4511,7 +4541,7 @@ dependencies = [
 
 [[package]]
 name = "namada_tests"
-version = "0.30.0"
+version = "0.29.0"
 dependencies = [
  "assert_cmd",
  "async-trait",
@@ -4562,7 +4592,7 @@ dependencies = [
 
 [[package]]
 name = "namada_tx_prelude"
-version = "0.30.0"
+version = "0.29.0"
 dependencies = [
  "borsh",
  "borsh-ext",
@@ -4577,7 +4607,7 @@ dependencies = [
 
 [[package]]
 name = "namada_vm_env"
-version = "0.30.0"
+version = "0.29.0"
 dependencies = [
  "borsh",
  "masp_primitives",
@@ -4586,7 +4616,7 @@ dependencies = [
 
 [[package]]
 name = "namada_vp_prelude"
-version = "0.30.0"
+version = "0.29.0"
 dependencies = [
  "borsh",
  "borsh-ext",
@@ -5865,7 +5895,7 @@ dependencies = [
  "futures-core",
  "futures-util",
  "h2",
- "http",
+ "http 0.2.11",
  "http-body",
  "hyper",
  "hyper-rustls",
@@ -7371,7 +7401,7 @@ dependencies = [
  "futures-core",
  "futures-util",
  "h2",
- "http",
+ "http 0.2.11",
  "http-body",
  "hyper",
  "hyper-timeout",
@@ -7585,7 +7615,7 @@ dependencies = [
  "byteorder",
  "bytes",
  "data-encoding",
- "http",
+ "http 0.2.11",
  "httparse",
  "log",
  "rand 0.8.5",
@@ -7810,7 +7840,7 @@ dependencies = [
  "futures-channel",
  "futures-util",
  "headers",
- "http",
+ "http 0.2.11",
  "hyper",
  "log",
  "mime",
@@ -7930,7 +7960,7 @@ dependencies = [
 [[package]]
 name = "wasmer"
 version = "2.3.0"
-source = "git+https://github.com/heliaxdev/wasmer?rev=255054f7f58b7b4a525f2fee6b9b86422d1ca15b#255054f7f58b7b4a525f2fee6b9b86422d1ca15b"
+source = "git+https://github.com/heliaxdev/wasmer?rev=833721a1b21cd192e7f044abe2139d03ba291149#833721a1b21cd192e7f044abe2139d03ba291149"
 dependencies = [
  "cfg-if 1.0.0",
  "indexmap 1.9.3",
@@ -7956,7 +7986,7 @@ dependencies = [
 [[package]]
 name = "wasmer-artifact"
 version = "2.3.0"
-source = "git+https://github.com/heliaxdev/wasmer?rev=255054f7f58b7b4a525f2fee6b9b86422d1ca15b#255054f7f58b7b4a525f2fee6b9b86422d1ca15b"
+source = "git+https://github.com/heliaxdev/wasmer?rev=833721a1b21cd192e7f044abe2139d03ba291149#833721a1b21cd192e7f044abe2139d03ba291149"
 dependencies = [
  "enumset",
  "loupe",
@@ -7968,7 +7998,7 @@ dependencies = [
 [[package]]
 name = "wasmer-cache"
 version = "2.3.0"
-source = "git+https://github.com/heliaxdev/wasmer?rev=255054f7f58b7b4a525f2fee6b9b86422d1ca15b#255054f7f58b7b4a525f2fee6b9b86422d1ca15b"
+source = "git+https://github.com/heliaxdev/wasmer?rev=833721a1b21cd192e7f044abe2139d03ba291149#833721a1b21cd192e7f044abe2139d03ba291149"
 dependencies = [
  "blake3",
  "hex",
@@ -7979,7 +8009,7 @@ dependencies = [
 [[package]]
 name = "wasmer-compiler"
 version = "2.3.0"
-source = "git+https://github.com/heliaxdev/wasmer?rev=255054f7f58b7b4a525f2fee6b9b86422d1ca15b#255054f7f58b7b4a525f2fee6b9b86422d1ca15b"
+source = "git+https://github.com/heliaxdev/wasmer?rev=833721a1b21cd192e7f044abe2139d03ba291149#833721a1b21cd192e7f044abe2139d03ba291149"
 dependencies = [
  "enumset",
  "loupe",
@@ -7996,7 +8026,7 @@ dependencies = [
 [[package]]
 name = "wasmer-compiler-cranelift"
 version = "2.3.0"
-source = "git+https://github.com/heliaxdev/wasmer?rev=255054f7f58b7b4a525f2fee6b9b86422d1ca15b#255054f7f58b7b4a525f2fee6b9b86422d1ca15b"
+source = "git+https://github.com/heliaxdev/wasmer?rev=833721a1b21cd192e7f044abe2139d03ba291149#833721a1b21cd192e7f044abe2139d03ba291149"
 dependencies = [
  "cranelift-codegen",
  "cranelift-entity",
@@ -8010,13 +8040,12 @@ dependencies = [
  "tracing",
  "wasmer-compiler",
  "wasmer-types",
- "wasmer-vm",
 ]
 
 [[package]]
 name = "wasmer-compiler-singlepass"
 version = "2.3.0"
-source = "git+https://github.com/heliaxdev/wasmer?rev=255054f7f58b7b4a525f2fee6b9b86422d1ca15b#255054f7f58b7b4a525f2fee6b9b86422d1ca15b"
+source = "git+https://github.com/heliaxdev/wasmer?rev=833721a1b21cd192e7f044abe2139d03ba291149#833721a1b21cd192e7f044abe2139d03ba291149"
 dependencies = [
  "byteorder",
  "dynasm",
@@ -8029,13 +8058,12 @@ dependencies = [
  "smallvec",
  "wasmer-compiler",
  "wasmer-types",
- "wasmer-vm",
 ]
 
 [[package]]
 name = "wasmer-derive"
 version = "2.3.0"
-source = "git+https://github.com/heliaxdev/wasmer?rev=255054f7f58b7b4a525f2fee6b9b86422d1ca15b#255054f7f58b7b4a525f2fee6b9b86422d1ca15b"
+source = "git+https://github.com/heliaxdev/wasmer?rev=833721a1b21cd192e7f044abe2139d03ba291149#833721a1b21cd192e7f044abe2139d03ba291149"
 dependencies = [
  "proc-macro-error",
  "proc-macro2",
@@ -8046,7 +8074,7 @@ dependencies = [
 [[package]]
 name = "wasmer-engine"
 version = "2.3.0"
-source = "git+https://github.com/heliaxdev/wasmer?rev=255054f7f58b7b4a525f2fee6b9b86422d1ca15b#255054f7f58b7b4a525f2fee6b9b86422d1ca15b"
+source = "git+https://github.com/heliaxdev/wasmer?rev=833721a1b21cd192e7f044abe2139d03ba291149#833721a1b21cd192e7f044abe2139d03ba291149"
 dependencies = [
  "backtrace",
  "enumset",
@@ -8068,7 +8096,7 @@ dependencies = [
 [[package]]
 name = "wasmer-engine-dylib"
 version = "2.3.0"
-source = "git+https://github.com/heliaxdev/wasmer?rev=255054f7f58b7b4a525f2fee6b9b86422d1ca15b#255054f7f58b7b4a525f2fee6b9b86422d1ca15b"
+source = "git+https://github.com/heliaxdev/wasmer?rev=833721a1b21cd192e7f044abe2139d03ba291149#833721a1b21cd192e7f044abe2139d03ba291149"
 dependencies = [
  "cfg-if 1.0.0",
  "enum-iterator",
@@ -8093,7 +8121,7 @@ dependencies = [
 [[package]]
 name = "wasmer-engine-universal"
 version = "2.3.0"
-source = "git+https://github.com/heliaxdev/wasmer?rev=255054f7f58b7b4a525f2fee6b9b86422d1ca15b#255054f7f58b7b4a525f2fee6b9b86422d1ca15b"
+source = "git+https://github.com/heliaxdev/wasmer?rev=833721a1b21cd192e7f044abe2139d03ba291149#833721a1b21cd192e7f044abe2139d03ba291149"
 dependencies = [
  "cfg-if 1.0.0",
  "enumset",
@@ -8112,7 +8140,7 @@ dependencies = [
 [[package]]
 name = "wasmer-engine-universal-artifact"
 version = "2.3.0"
-source = "git+https://github.com/heliaxdev/wasmer?rev=255054f7f58b7b4a525f2fee6b9b86422d1ca15b#255054f7f58b7b4a525f2fee6b9b86422d1ca15b"
+source = "git+https://github.com/heliaxdev/wasmer?rev=833721a1b21cd192e7f044abe2139d03ba291149#833721a1b21cd192e7f044abe2139d03ba291149"
 dependencies = [
  "enum-iterator",
  "enumset",
@@ -8127,7 +8155,7 @@ dependencies = [
 [[package]]
 name = "wasmer-object"
 version = "2.3.0"
-source = "git+https://github.com/heliaxdev/wasmer?rev=255054f7f58b7b4a525f2fee6b9b86422d1ca15b#255054f7f58b7b4a525f2fee6b9b86422d1ca15b"
+source = "git+https://github.com/heliaxdev/wasmer?rev=833721a1b21cd192e7f044abe2139d03ba291149#833721a1b21cd192e7f044abe2139d03ba291149"
 dependencies = [
  "object 0.28.4",
  "thiserror",
@@ -8138,12 +8166,13 @@ dependencies = [
 [[package]]
 name = "wasmer-types"
 version = "2.3.0"
-source = "git+https://github.com/heliaxdev/wasmer?rev=255054f7f58b7b4a525f2fee6b9b86422d1ca15b#255054f7f58b7b4a525f2fee6b9b86422d1ca15b"
+source = "git+https://github.com/heliaxdev/wasmer?rev=833721a1b21cd192e7f044abe2139d03ba291149#833721a1b21cd192e7f044abe2139d03ba291149"
 dependencies = [
  "backtrace",
  "enum-iterator",
  "indexmap 1.9.3",
  "loupe",
+ "more-asserts",
  "rkyv",
  "serde 1.0.193",
  "thiserror",
@@ -8152,7 +8181,7 @@ dependencies = [
 [[package]]
 name = "wasmer-vm"
 version = "2.3.0"
-source = "git+https://github.com/heliaxdev/wasmer?rev=255054f7f58b7b4a525f2fee6b9b86422d1ca15b#255054f7f58b7b4a525f2fee6b9b86422d1ca15b"
+source = "git+https://github.com/heliaxdev/wasmer?rev=833721a1b21cd192e7f044abe2139d03ba291149#833721a1b21cd192e7f044abe2139d03ba291149"
 dependencies = [
  "backtrace",
  "cc",

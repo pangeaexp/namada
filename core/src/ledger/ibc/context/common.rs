@@ -44,7 +44,9 @@ pub trait IbcCommonContext: IbcStorageContext {
         let key = storage::client_state_key(client_id);
         match self.read_bytes(&key)? {
             Some(value) => Any::decode(&value[..])
-                .map_err(ClientError::Decode)?
+                .map_err(|e| ClientError::Other {
+                    description: e.to_string(),
+                })?
                 .try_into()
                 .map_err(ContextError::from),
             None => Err(ClientError::ClientStateNotFound {
@@ -74,7 +76,9 @@ pub trait IbcCommonContext: IbcStorageContext {
         let key = storage::consensus_state_key(client_id, height);
         match self.read_bytes(&key)? {
             Some(value) => Any::decode(&value[..])
-                .map_err(ClientError::Decode)?
+                .map_err(|e| ClientError::Other {
+                    description: e.to_string(),
+                })?
                 .try_into()
                 .map_err(ContextError::from),
             None => Err(ClientError::ConsensusStateNotFound {
@@ -113,7 +117,9 @@ pub trait IbcCommonContext: IbcStorageContext {
         consensus_state: Vec<u8>,
     ) -> Result<AnyConsensusState> {
         Any::decode(&consensus_state[..])
-            .map_err(ClientError::Decode)?
+            .map_err(|e| ClientError::Other {
+                description: e.to_string(),
+            })?
             .try_into()
             .map_err(ContextError::from)
     }

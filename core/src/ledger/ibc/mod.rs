@@ -364,7 +364,7 @@ pub mod testing {
     use ibc::core::host::types::identifiers::{ChannelId, PortId};
     use ibc::core::primitives::Signer;
     use ibc::primitives::proto::Any;
-    use ibc::primitives::{Msg, Timestamp};
+    use ibc::primitives::{Timestamp, ToProto};
     use proptest::prelude::{Just, Strategy};
     use proptest::{collection, prop_compose};
 

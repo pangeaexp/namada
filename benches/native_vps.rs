@@ -23,6 +23,7 @@ use namada::ibc::core::connection::types::Counterparty;
 use namada::ibc::core::host::types::identifiers::{
     ClientId, ClientType, ConnectionId, PortId,
 };
+use namada::ibc::primitives::ToProto;
 use namada::ledger::eth_bridge::read_native_erc20_address;
 use namada::ledger::gas::{TxGasMeter, VpGasMeter};
 use namada::ledger::governance::GovernanceVp;
@@ -328,7 +329,7 @@ fn ibc(c: &mut Criterion) {
         delay_period: std::time::Duration::new(100, 0),
         signer: defaults::albert_address().to_string().into(),
     };
-    let open_connection = shell.generate_ibc_tx(TX_IBC_WASM, msg);
+    let open_connection = shell.generate_ibc_tx(TX_IBC_WASM, msg.to_any());
 
     // Channel handshake
     let msg = MsgChannelOpenInit {
@@ -341,7 +342,7 @@ fn ibc(c: &mut Criterion) {
     };
 
     // Avoid serializing the data again with borsh
-    let open_channel = shell.generate_ibc_tx(TX_IBC_WASM, msg);
+    let open_channel = shell.generate_ibc_tx(TX_IBC_WASM, msg.to_any());
 
     // Ibc transfer
     let outgoing_transfer = shell.generate_ibc_transfer_tx();
@@ -1121,7 +1122,7 @@ fn ibc_vp_validate_action(c: &mut Criterion) {
         delay_period: std::time::Duration::new(100, 0),
         signer: defaults::albert_address().to_string().into(),
     };
-    let open_connection = shell.generate_ibc_tx(TX_IBC_WASM, msg);
+    let open_connection = shell.generate_ibc_tx(TX_IBC_WASM, msg.to_any());
 
     // Channel handshake
     let msg = MsgChannelOpenInit {
@@ -1134,7 +1135,7 @@ fn ibc_vp_validate_action(c: &mut Criterion) {
     };
 
     // Avoid serializing the data again with borsh
-    let open_channel = shell.generate_ibc_tx(TX_IBC_WASM, msg);
+    let open_channel = shell.generate_ibc_tx(TX_IBC_WASM, msg.to_any());
 
     // Ibc transfer
     let outgoing_transfer = shell.generate_ibc_transfer_tx();
@@ -1219,7 +1220,7 @@ fn ibc_vp_execute_action(c: &mut Criterion) {
         delay_period: std::time::Duration::new(100, 0),
         signer: defaults::albert_address().to_string().into(),
     };
-    let open_connection = shell.generate_ibc_tx(TX_IBC_WASM, msg);
+    let open_connection = shell.generate_ibc_tx(TX_IBC_WASM, msg.to_any());
 
     // Channel handshake
     let msg = MsgChannelOpenInit {
@@ -1232,7 +1233,7 @@ fn ibc_vp_execute_action(c: &mut Criterion) {
     };
 
     // Avoid serializing the data again with borsh
-    let open_channel = shell.generate_ibc_tx(TX_IBC_WASM, msg);
+    let open_channel = shell.generate_ibc_tx(TX_IBC_WASM, msg.to_any());
 
     // Ibc transfer
     let outgoing_transfer = shell.generate_ibc_transfer_tx();

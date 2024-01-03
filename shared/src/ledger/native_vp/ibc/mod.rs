@@ -395,7 +395,7 @@ mod tests {
     };
     use crate::ibc::core::router::types::event::ModuleEvent;
     use crate::ibc::primitives::proto::{Any, Protobuf};
-    use crate::ibc::primitives::{Msg, Timestamp};
+    use crate::ibc::primitives::{Timestamp, ToProto};
     use crate::ledger::gas::VpGasMeter;
     use crate::ledger::parameters::storage::{
         get_epoch_duration_storage_key, get_max_expected_time_per_block_key,
