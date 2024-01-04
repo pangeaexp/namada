@@ -14,7 +14,8 @@ use crate::ibc::core::handler::types::error::ContextError;
 use crate::ibc::core::host::types::identifiers::{ChannelId, PortId};
 use crate::ledger::ibc::storage;
 use crate::ledger::storage_api::token::read_denom;
-use crate::types::address::{Address, InternalAddress};
+use crate::types::address::Address;
+use crate::types::ibc::IBC_ESCROW_ADDRESS;
 use crate::types::token;
 use crate::types::uint::Uint;
 
@@ -150,10 +151,14 @@ where
         // has no prefix
         let (ibc_token, amount) = self.get_token_amount(coin)?;
 
-        let escrow = Address::Internal(InternalAddress::Ibc);
         self.inner
             .borrow_mut()
-            .transfer_token(from_account, &escrow, &ibc_token, amount)
+            .transfer_token(
+                from_account,
+                &IBC_ESCROW_ADDRESS,
+                &ibc_token,
+                amount,
+            )
             .map_err(|e| ContextError::from(e).into())
     }
 
@@ -168,10 +173,9 @@ where
         // has no prefix
         let (ibc_token, amount) = self.get_token_amount(coin)?;
 
-        let escrow = Address::Internal(InternalAddress::Ibc);
         self.inner
             .borrow_mut()
-            .transfer_token(&escrow, to_account, &ibc_token, amount)
+            .transfer_token(&IBC_ESCROW_ADDRESS, to_account, &ibc_token, amount)
             .map_err(|e| ContextError::from(e).into())
     }
 

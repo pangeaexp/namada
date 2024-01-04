@@ -7,6 +7,7 @@ use sha2::Digest;
 
 use super::client::{AnyClientState, AnyConsensusState};
 use super::storage::IbcStorageContext;
+use crate::ibc::apps::nft_transfer::types::{PrefixedClassId, TokenId};
 use crate::ibc::clients::tendermint::consensus_state::ConsensusState as TmConsensusState;
 use crate::ibc::clients::tendermint::types::ConsensusState as TmConsensusStateType;
 use crate::ibc::core::channel::types::channel::ChannelEnd;
@@ -31,8 +32,11 @@ use crate::ledger::ibc::storage;
 use crate::ledger::parameters::storage::get_max_expected_time_per_block_key;
 use crate::ledger::storage_api;
 use crate::tendermint::Time as TmTime;
+use crate::types::address::Address;
+use crate::types::ibc::{NftClass, NftMetadata};
 use crate::types::storage::{BlockHeight, Key};
 use crate::types::time::DurationSecs;
+use crate::types::token;
 
 /// Result of IBC common function call
 pub type Result<T> = std::result::Result<T, ContextError>;
@@ -672,6 +676,60 @@ pub trait IbcCommonContext: IbcStorageContext {
             })?;
         }
         Ok(())
+    }
+
+    /// Get the NFT class
+    fn nft_class(
+        &self,
+        class_id: &PrefixedClassId,
+    ) -> Result<Option<NftClass>> {
+        let key = storage::nft_class_key(class_id);
+        self.read(&key).map_err(ContextError::from)
+    }
+
+    /// Store the NFT class
+    fn store_nft_class(
+        &self,
+        class_id: &PrefixedClassId,
+        class: NftClass,
+    ) -> Result<()> {
+        let key = storage::nft_class_key(class_id);
+        self.write(&key, class).map_err(ContextError::from)
+    }
+
+    /// Get the NFT metadata
+    fn nft_metadata(
+        &self,
+        class_id: &PrefixedClassId,
+        token_id: &TokenId,
+    ) -> Result<Option<NftMetadata>> {
+        let key = storage::nft_metadata_key(class_id, token_id);
+        self.read(&key).map_err(ContextError::from)
+    }
+
+    /// Store the NFT metadata
+    fn store_nft_metadata(
+        &self,
+        class_id: &PrefixedClassId,
+        token_id: &TokenId,
+        metadata: NftMetadata,
+    ) -> Result<()> {
+        let key = storage::nft_metadata_key(class_id, token_id);
+        self.write(&key, metadata).map_err(ContextError::from)
+    }
+
+    /// Validate the NFT balance. If the balance isn't present or 1, returns an
+    /// error.
+    fn is_valid_nft_balance(
+        &self,
+        class_id: &PrefixedClassId,
+        token_id: &TokenId,
+        owner: &Address,
+    ) -> Result<bool> {
+        let ibc_token = storage::ibc_token_for_nft(class_id, token_id);
+        let balance_key = token::balance_key(&ibc_token, owner);
+        let amount = self.read::<token::Amount>(&balance_key)?;
+        Ok(amount == Some(token::Amount::from_u64(1)))
     }
 }
 
