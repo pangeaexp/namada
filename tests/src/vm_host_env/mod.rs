@@ -36,6 +36,7 @@ mod tests {
     use namada::types::time::DateTimeUtc;
     use namada::types::token::{self, Amount};
     use namada::types::{address, key};
+    use namada_core::ledger::ibc::context::nft_transfer_mod::testing::DummyNftTransferModule;
     use namada_core::ledger::ibc::context::transfer_mod::testing::DummyTransferModule;
     use namada_core::ledger::ibc::Error as IbcActionError;
     use namada_test_utils::TestWasms;
@@ -1028,7 +1029,9 @@ mod tests {
         let mut actions = tx_host_env::ibc::ibc_actions(tx::ctx());
         // the dummy module closes the channel
         let dummy_module = DummyTransferModule {};
-        actions.add_transfer_module(dummy_module.module_id(), dummy_module);
+        actions.add_transfer_module(dummy_module);
+        let dummy_module = DummyNftTransferModule {};
+        actions.add_transfer_module(dummy_module);
         actions
             .execute(&tx_data)
             .expect("closing the channel failed");

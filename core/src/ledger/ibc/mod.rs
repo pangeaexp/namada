@@ -10,6 +10,8 @@ use std::str::FromStr;
 
 use borsh::BorshDeserialize;
 pub use context::common::IbcCommonContext;
+pub use context::nft_transfer::NftTransferContext;
+pub use context::nft_transfer_mod::NftTransferModule;
 use context::router::IbcRouter;
 pub use context::storage::{IbcStorageContext, ProofSpec};
 pub use context::token_transfer::TokenTransferContext;
@@ -19,6 +21,11 @@ pub use context::ValidationParams;
 use prost::Message;
 use thiserror::Error;
 
+use crate::ibc::apps::nft_transfer::handler::{
+    send_nft_transfer_execute, send_nft_transfer_validate,
+};
+use crate::ibc::apps::nft_transfer::types::error::NftTransferError;
+use crate::ibc::apps::nft_transfer::types::msgs::transfer::MsgTransfer as MsgNftTransfer;
 use crate::ibc::apps::transfer::handler::{
     send_transfer_execute, send_transfer_validate,
 };
@@ -34,7 +41,6 @@ use crate::ibc::core::handler::types::msgs::MsgEnvelope;
 use crate::ibc::core::host::types::error::IdentifierError;
 use crate::ibc::core::host::types::identifiers::{ChannelId, PortId};
 use crate::ibc::core::router::types::error::RouterError;
-use crate::ibc::core::router::types::module::ModuleId;
 use crate::ibc::primitives::proto::Any;
 use crate::types::address::{Address, MASP};
 use crate::types::ibc::{
@@ -54,6 +60,8 @@ pub enum Error {
     Context(Box<ContextError>),
     #[error("IBC token transfer error: {0}")]
     TokenTransfer(TokenTransferError),
+    #[error("IBC NFT transfer error: {0}")]
+    NftTransfer(NftTransferError),
     #[error("Denom error: {0}")]
     Denom(String),
     #[error("Invalid chain ID: {0}")]
@@ -84,13 +92,9 @@ where
         }
     }
 
-    /// Add TokenTransfer route
-    pub fn add_transfer_module(
-        &mut self,
-        module_id: ModuleId,
-        module: impl ModuleWrapper + 'a,
-    ) {
-        self.router.add_transfer_module(module_id, module)
+    /// Add a transfer module to the router
+    pub fn add_transfer_module(&mut self, module: impl ModuleWrapper + 'a) {
+        self.router.add_transfer_module(module)
     }
 
     /// Set the validation parameters
@@ -111,6 +115,16 @@ where
                     msg.clone(),
                 )
                 .map_err(Error::TokenTransfer)
+            }
+            IbcMessage::NftTransfer(msg) => {
+                let mut nft_transfer_ctx =
+                    NftTransferContext::new(self.ctx.inner.clone());
+                send_nft_transfer_execute(
+                    &mut self.ctx,
+                    &mut nft_transfer_ctx,
+                    msg.clone(),
+                )
+                .map_err(Error::NftTransfer)
             }
             IbcMessage::ShieldedTransfer(msg) => {
                 let mut token_transfer_ctx =
@@ -236,6 +250,12 @@ where
                 send_transfer_validate(&self.ctx, &token_transfer_ctx, msg)
                     .map_err(Error::TokenTransfer)
             }
+            IbcMessage::NftTransfer(msg) => {
+                let nft_transfer_ctx =
+                    NftTransferContext::new(self.ctx.inner.clone());
+                send_nft_transfer_validate(&self.ctx, &nft_transfer_ctx, msg)
+                    .map_err(Error::NftTransfer)
+            }
             IbcMessage::ShieldedTransfer(msg) => {
                 let token_transfer_ctx =
                     TokenTransferContext::new(self.ctx.inner.clone());
@@ -300,6 +320,8 @@ pub enum IbcMessage {
     Envelope(MsgEnvelope),
     /// Ibc transaprent transfer
     Transfer(MsgTransfer),
+    /// NFT transfer
+    NftTransfer(MsgNftTransfer),
     /// Ibc shielded transfer
     ShieldedTransfer(MsgShieldedTransfer),
 }
@@ -310,6 +332,9 @@ pub fn decode_message(tx_data: &[u8]) -> Result<IbcMessage, Error> {
     if let Ok(any_msg) = Any::decode(tx_data) {
         if let Ok(transfer_msg) = MsgTransfer::try_from(any_msg.clone()) {
             return Ok(IbcMessage::Transfer(transfer_msg));
+        }
+        if let Ok(transfer_msg) = MsgNftTransfer::try_from(any_msg.clone()) {
+            return Ok(IbcMessage::NftTransfer(transfer_msg));
         }
         if let Ok(envelope) = MsgEnvelope::try_from(any_msg) {
             return Ok(IbcMessage::Envelope(envelope));

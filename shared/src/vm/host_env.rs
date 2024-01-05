@@ -2002,7 +2002,9 @@ where
     use std::cell::RefCell;
     use std::rc::Rc;
 
-    use namada_core::ledger::ibc::{IbcActions, TransferModule};
+    use namada_core::ledger::ibc::{
+        IbcActions, NftTransferModule, TransferModule,
+    };
 
     let tx_data = unsafe { env.ctx.tx.get().data() }.ok_or_else(|| {
         let sentinel = unsafe { env.ctx.sentinel.get() };
@@ -2011,8 +2013,10 @@ where
     })?;
     let ctx = Rc::new(RefCell::new(env.ctx.clone()));
     let mut actions = IbcActions::new(ctx.clone());
-    let module = TransferModule::new(ctx);
-    actions.add_transfer_module(module.module_id(), module);
+    let module = TransferModule::new(ctx.clone());
+    actions.add_transfer_module(module);
+    let module = NftTransferModule::new(ctx);
+    actions.add_transfer_module(module);
     actions.execute(&tx_data)?;
 
     Ok(())

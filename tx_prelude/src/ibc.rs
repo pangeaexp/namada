@@ -4,7 +4,8 @@ use std::cell::RefCell;
 use std::rc::Rc;
 
 pub use namada_core::ledger::ibc::{
-    IbcActions, IbcCommonContext, IbcStorageContext, ProofSpec, TransferModule,
+    IbcActions, IbcCommonContext, IbcStorageContext, NftTransferModule,
+    ProofSpec, TransferModule,
 };
 use namada_core::ledger::masp_utils;
 use namada_core::ledger::tx_env::TxEnv;
@@ -19,8 +20,10 @@ use crate::{Ctx, Error};
 pub fn ibc_actions(ctx: &mut Ctx) -> IbcActions<Ctx> {
     let ctx = Rc::new(RefCell::new(ctx.clone()));
     let mut actions = IbcActions::new(ctx.clone());
-    let module = TransferModule::new(ctx);
-    actions.add_transfer_module(module.module_id(), module);
+    let module = TransferModule::new(ctx.clone());
+    actions.add_transfer_module(module);
+    let module = NftTransferModule::new(ctx);
+    actions.add_transfer_module(module);
     actions
 }
 

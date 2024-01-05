@@ -12,7 +12,8 @@ use namada_core::ledger::gas::{
     IBC_ACTION_EXECUTE_GAS, IBC_ACTION_VALIDATE_GAS,
 };
 use namada_core::ledger::ibc::{
-    Error as ActionError, IbcActions, TransferModule, ValidationParams,
+    Error as ActionError, IbcActions, NftTransferModule, TransferModule,
+    ValidationParams,
 };
 use namada_core::ledger::storage::write_log::StorageModification;
 use namada_core::ledger::storage::{self as ledger_storage, StorageHasher};
@@ -105,7 +106,9 @@ where
 
         let mut actions = IbcActions::new(ctx.clone());
         let module = TransferModule::new(ctx.clone());
-        actions.add_transfer_module(module.module_id(), module);
+        actions.add_transfer_module(module);
+        let module = NftTransferModule::new(ctx.clone());
+        actions.add_transfer_module(module);
         // Charge gas for the expensive execution
         self.ctx
             .charge_gas(IBC_ACTION_EXECUTE_GAS)
@@ -150,8 +153,10 @@ where
         let mut actions = IbcActions::new(ctx.clone());
         actions.set_validation_params(self.validation_params()?);
 
-        let module = TransferModule::new(ctx);
-        actions.add_transfer_module(module.module_id(), module);
+        let module = TransferModule::new(ctx.clone());
+        actions.add_transfer_module(module);
+        let module = NftTransferModule::new(ctx);
+        actions.add_transfer_module(module);
         // Charge gas for the expensive validation
         self.ctx
             .charge_gas(IBC_ACTION_VALIDATE_GAS)

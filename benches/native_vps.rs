@@ -7,7 +7,9 @@ use criterion::{criterion_group, criterion_main, Criterion};
 use masp_primitives::sapling::Node;
 use namada::core::ledger::governance::storage::proposal::ProposalType;
 use namada::core::ledger::governance::storage::vote::ProposalVote;
-use namada::core::ledger::ibc::{IbcActions, TransferModule};
+use namada::core::ledger::ibc::{
+    IbcActions, NftTransferModule, TransferModule,
+};
 use namada::core::ledger::pgf::storage::steward::StewardDetail;
 use namada::core::ledger::storage_api::{StorageRead, StorageWrite};
 use namada::core::types::address::{self, Address};
@@ -1189,8 +1191,10 @@ fn ibc_vp_validate_action(c: &mut Criterion) {
         let mut actions = IbcActions::new(ctx.clone());
         actions.set_validation_params(ibc.validation_params().unwrap());
 
-        let module = TransferModule::new(ctx);
-        actions.add_transfer_module(module.module_id(), module);
+        let module = TransferModule::new(ctx.clone());
+        actions.add_transfer_module(module);
+        let module = NftTransferModule::new(ctx);
+        actions.add_transfer_module(module);
 
         group.bench_function(bench_name, |b| {
             b.iter(|| actions.validate(&tx_data).unwrap())
@@ -1287,8 +1291,10 @@ fn ibc_vp_execute_action(c: &mut Criterion) {
         let mut actions = IbcActions::new(ctx.clone());
         actions.set_validation_params(ibc.validation_params().unwrap());
 
-        let module = TransferModule::new(ctx);
-        actions.add_transfer_module(module.module_id(), module);
+        let module = TransferModule::new(ctx.clone());
+        actions.add_transfer_module(module);
+        let module = NftTransferModule::new(ctx);
+        actions.add_transfer_module(module);
 
         group.bench_function(bench_name, |b| {
             b.iter(|| actions.execute(&tx_data).unwrap())
