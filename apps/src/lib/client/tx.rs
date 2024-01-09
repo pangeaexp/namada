@@ -473,6 +473,7 @@ pub async fn submit_become_validator(
         website,
         description,
         discord_handle,
+        avatar,
         unsafe_dont_encrypt,
         tx_code_path,
     }: args::TxBecomeValidator,
@@ -711,6 +712,7 @@ pub async fn submit_become_validator(
         description,
         website,
         discord_handle,
+        avatar,
     };
 
     // Put together all the PKs that we have to sign with to verify ownership
@@ -846,6 +848,7 @@ pub async fn submit_init_validator(
         website,
         description,
         discord_handle,
+        avatar,
         validator_vp_code_path,
         unsafe_dont_encrypt,
         tx_init_account_code_path,
@@ -897,6 +900,7 @@ pub async fn submit_init_validator(
             description,
             website,
             discord_handle,
+            avatar,
             tx_code_path: tx_become_validator_code_path,
             unsafe_dont_encrypt,
         },

@@ -2869,6 +2869,7 @@ pub mod args {
     pub const ALLOW_DUPLICATE_IP: ArgFlag = flag("allow-duplicate-ip");
     pub const AMOUNT: Arg<token::DenominatedAmount> = arg("amount");
     pub const ARCHIVE_DIR: ArgOpt<PathBuf> = arg_opt("archive-dir");
+    pub const AVATAR_OPT: ArgOpt<String> = arg_opt("avatar");
     pub const BALANCE_OWNER: ArgOpt<WalletBalanceOwner> = arg_opt("owner");
     pub const BASE_DIR: ArgDefault<PathBuf> = arg_default(
         "base-dir",
@@ -4074,6 +4075,7 @@ pub mod args {
                 description: self.description,
                 website: self.website,
                 discord_handle: self.discord_handle,
+                avatar: self.avatar,
                 unsafe_dont_encrypt: self.unsafe_dont_encrypt,
                 tx_code_path: self.tx_code_path.to_path_buf(),
             }
@@ -4096,6 +4098,7 @@ pub mod args {
             let description = DESCRIPTION_OPT.parse(matches);
             let website = WEBSITE_OPT.parse(matches);
             let discord_handle = DISCORD_OPT.parse(matches);
+            let avatar = AVATAR_OPT.parse(matches);
             let unsafe_dont_encrypt = UNSAFE_DONT_ENCRYPT.parse(matches);
             let tx_code_path = PathBuf::from(TX_BECOME_VALIDATOR_WASM);
             Self {
@@ -4112,6 +4115,7 @@ pub mod args {
                 description,
                 website,
                 discord_handle,
+                avatar,
                 unsafe_dont_encrypt,
                 tx_code_path,
             }
@@ -4160,6 +4164,7 @@ pub mod args {
                 .arg(DESCRIPTION_OPT.def().help("The validator's description."))
                 .arg(WEBSITE_OPT.def().help("The validator's website."))
                 .arg(DISCORD_OPT.def().help("The validator's discord handle."))
+                .arg(AVATAR_OPT.def().help("The validator's avatar."))
                 .arg(VALIDATOR_CODE_PATH.def().help(
                     "The path to the validity predicate WASM code to be used \
                      for the validator account. Uses the default validator VP \
@@ -4195,6 +4200,7 @@ pub mod args {
                 description: self.description,
                 website: self.website,
                 discord_handle: self.discord_handle,
+                avatar: self.avatar,
                 validator_vp_code_path: self
                     .validator_vp_code_path
                     .to_path_buf(),
@@ -4225,6 +4231,7 @@ pub mod args {
             let description = DESCRIPTION_OPT.parse(matches);
             let website = WEBSITE_OPT.parse(matches);
             let discord_handle = DISCORD_OPT.parse(matches);
+            let avatar = AVATAR_OPT.parse(matches);
             let validator_vp_code_path = VALIDATOR_CODE_PATH
                 .parse(matches)
                 .unwrap_or_else(|| PathBuf::from(VP_USER_WASM));
@@ -4248,6 +4255,7 @@ pub mod args {
                 description,
                 website,
                 discord_handle,
+                avatar,
                 validator_vp_code_path,
                 unsafe_dont_encrypt,
                 tx_init_account_code_path,
@@ -4300,6 +4308,7 @@ pub mod args {
                 .arg(DESCRIPTION_OPT.def().help("The validator's description."))
                 .arg(WEBSITE_OPT.def().help("The validator's website."))
                 .arg(DISCORD_OPT.def().help("The validator's discord handle."))
+                .arg(AVATAR_OPT.def().help("The validator's avatar."))
                 .arg(VALIDATOR_CODE_PATH.def().help(
                     "The path to the validity predicate WASM code to be used \
                      for the validator account. Uses the default validator VP \
@@ -5393,6 +5402,7 @@ pub mod args {
                 description: self.description,
                 website: self.website,
                 discord_handle: self.discord_handle,
+                avatar: self.avatar,
                 commission_rate: self.commission_rate,
                 tx_code_path: self.tx_code_path.to_path_buf(),
             }
@@ -5407,6 +5417,7 @@ pub mod args {
             let description = DESCRIPTION_OPT.parse(matches);
             let website = WEBSITE_OPT.parse(matches);
             let discord_handle = DISCORD_OPT.parse(matches);
+            let avatar = AVATAR_OPT.parse(matches);
             let commission_rate = COMMISSION_RATE_OPT.parse(matches);
             let tx_code_path = PathBuf::from(TX_CHANGE_METADATA_WASM);
             Self {
@@ -5416,6 +5427,7 @@ pub mod args {
                 description,
                 website,
                 discord_handle,
+                avatar,
                 commission_rate,
                 tx_code_path,
             }
@@ -5443,6 +5455,10 @@ pub mod args {
                     "The desired new validator discord handle. To remove the \
                      existing discord handle, pass an empty string to this \
                      argument.",
+                ))
+                .arg(AVATAR_OPT.def().help(
+                    "The desired new validator avatar url. To remove the \
+                     existing avatar, pass an empty string to this argument.",
                 ))
                 .arg(
                     COMMISSION_RATE_OPT
@@ -6791,6 +6807,7 @@ pub mod args {
         pub description: Option<String>,
         pub website: Option<String>,
         pub discord_handle: Option<String>,
+        pub avatar: Option<String>,
         pub address: EstablishedAddress,
         pub tx_path: PathBuf,
     }
@@ -6810,6 +6827,7 @@ pub mod args {
             let description = DESCRIPTION_OPT.parse(matches);
             let website = WEBSITE_OPT.parse(matches);
             let discord_handle = DISCORD_OPT.parse(matches);
+            let avatar = AVATAR_OPT.parse(matches);
             let address = RAW_ADDRESS_ESTABLISHED.parse(matches);
             let tx_path = PATH.parse(matches);
             Self {
@@ -6824,6 +6842,7 @@ pub mod args {
                 description,
                 website,
                 discord_handle,
+                avatar,
                 tx_path,
                 address,
             }
@@ -6880,6 +6899,9 @@ pub mod args {
                 .arg(DISCORD_OPT.def().help(
                     "The validator's discord handle. This is an optional \
                      parameter.",
+                ))
+                .arg(AVATAR_OPT.def().help(
+                    "The validator's avatar. This is an optional parameter.",
                 ))
         }
     }
