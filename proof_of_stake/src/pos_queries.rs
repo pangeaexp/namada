@@ -206,6 +206,16 @@ where
     pub fn is_deciding_offset_within_epoch(self, height_offset: u64) -> bool {
         let current_decision_height = self.get_current_decision_height();
 
+        // NOTE: the first stored height in `fst_block_heights_of_each_epoch`
+        // is 0, because of a bug (should be 1), so this code needs to
+        // handle that case
+        //
+        // we can remove this check once that's fixed
+        if self.storage.get_block_epoch().unwrap() == Epoch(0) {
+            let height_offset_within_epoch = BlockHeight(1 + height_offset);
+            return current_decision_height == height_offset_within_epoch;
+        }
+
         let pred_epochs = self
             .storage
             .get_pred_epochs()
