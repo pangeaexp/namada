@@ -7,7 +7,7 @@ use crate::ibc::apps::transfer::types::msgs::transfer::MsgTransfer;
 use crate::ibc::apps::transfer::types::packet::PacketData;
 use crate::ibc::apps::transfer::types::PrefixedCoin;
 use crate::ibc::core::channel::types::timeout::TimeoutHeight;
-use crate::ibc::primitives::Msg;
+use crate::ibc::primitives::ToProto;
 use crate::ledger::governance::storage::proposal::PGFIbcTarget;
 use crate::ledger::ibc::{IbcActions, IbcCommonContext, IbcStorageContext};
 use crate::ledger::parameters::read_epoch_duration_parameter;

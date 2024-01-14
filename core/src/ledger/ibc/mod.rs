@@ -25,12 +25,10 @@ use crate::ibc::apps::nft_transfer::handler::{
     send_nft_transfer_execute, send_nft_transfer_validate,
 };
 use crate::ibc::apps::nft_transfer::types::error::NftTransferError;
-use crate::ibc::apps::nft_transfer::types::msgs::transfer::MsgTransfer as MsgNftTransfer;
 use crate::ibc::apps::transfer::handler::{
     send_transfer_execute, send_transfer_validate,
 };
 use crate::ibc::apps::transfer::types::error::TokenTransferError;
-use crate::ibc::apps::transfer::types::msgs::transfer::MsgTransfer;
 use crate::ibc::apps::transfer::types::{
     is_receiver_chain_source, PrefixedDenom, TracePrefix,
 };
@@ -44,10 +42,11 @@ use crate::ibc::core::router::types::error::RouterError;
 use crate::ibc::primitives::proto::Any;
 use crate::types::address::{Address, MASP};
 use crate::types::ibc::{
-    get_shielded_transfer, is_ibc_denom, is_nft_trace, MsgShieldedTransfer,
-    EVENT_ATTRIBUTE_CLASS, EVENT_ATTRIBUTE_DENOM, EVENT_ATTRIBUTE_RECEIVER,
-    EVENT_ATTRIBUTE_TOKEN, EVENT_ATTRIBUTE_TRACE, EVENT_TYPE_DENOM_TRACE,
-    EVENT_TYPE_NFT_PACKET, EVENT_TYPE_PACKET, EVENT_TYPE_TOKEN_TRACE,
+    get_shielded_transfer, is_ibc_denom, is_nft_trace, MsgNftTransfer,
+    MsgTransfer, EVENT_ATTRIBUTE_CLASS, EVENT_ATTRIBUTE_DENOM,
+    EVENT_ATTRIBUTE_RECEIVER, EVENT_ATTRIBUTE_TOKEN, EVENT_ATTRIBUTE_TRACE,
+    EVENT_TYPE_DENOM_TRACE, EVENT_TYPE_NFT_PACKET, EVENT_TYPE_PACKET,
+    EVENT_TYPE_TOKEN_TRACE,
 };
 use crate::types::masp::PaymentAddress;
 
@@ -114,9 +113,10 @@ where
                 send_transfer_execute(
                     &mut self.ctx,
                     &mut token_transfer_ctx,
-                    msg.clone(),
+                    msg.message.clone(),
                 )
-                .map_err(Error::TokenTransfer)
+                .map_err(Error::TokenTransfer)?;
+                self.handle_masp_tx(message)
             }
             IbcMessage::NftTransfer(msg) => {
                 let mut nft_transfer_ctx =
@@ -124,19 +124,9 @@ where
                 send_nft_transfer_execute(
                     &mut self.ctx,
                     &mut nft_transfer_ctx,
-                    msg.clone(),
-                )
-                .map_err(Error::NftTransfer)
-            }
-            IbcMessage::ShieldedTransfer(msg) => {
-                let mut token_transfer_ctx =
-                    TokenTransferContext::new(self.ctx.inner.clone());
-                send_transfer_execute(
-                    &mut self.ctx,
-                    &mut token_transfer_ctx,
                     msg.message.clone(),
                 )
-                .map_err(Error::TokenTransfer)?;
+                .map_err(Error::NftTransfer)?;
                 self.handle_masp_tx(message)
             }
             IbcMessage::Envelope(envelope) => {
@@ -278,24 +268,22 @@ where
             IbcMessage::Transfer(msg) => {
                 let token_transfer_ctx =
                     TokenTransferContext::new(self.ctx.inner.clone());
-                send_transfer_validate(&self.ctx, &token_transfer_ctx, msg)
-                    .map_err(Error::TokenTransfer)
-            }
-            IbcMessage::NftTransfer(msg) => {
-                let nft_transfer_ctx =
-                    NftTransferContext::new(self.ctx.inner.clone());
-                send_nft_transfer_validate(&self.ctx, &nft_transfer_ctx, msg)
-                    .map_err(Error::NftTransfer)
-            }
-            IbcMessage::ShieldedTransfer(msg) => {
-                let token_transfer_ctx =
-                    TokenTransferContext::new(self.ctx.inner.clone());
                 send_transfer_validate(
                     &self.ctx,
                     &token_transfer_ctx,
                     msg.message,
                 )
                 .map_err(Error::TokenTransfer)
+            }
+            IbcMessage::NftTransfer(msg) => {
+                let nft_transfer_ctx =
+                    NftTransferContext::new(self.ctx.inner.clone());
+                send_nft_transfer_validate(
+                    &self.ctx,
+                    &nft_transfer_ctx,
+                    msg.message,
+                )
+                .map_err(Error::NftTransfer)
             }
             IbcMessage::Envelope(envelope) => {
                 validate(&self.ctx, &self.router, envelope)
@@ -326,7 +314,8 @@ where
                     None => return Ok(()),
                 }
             }
-            IbcMessage::ShieldedTransfer(msg) => Some(msg.shielded_transfer),
+            IbcMessage::Transfer(msg) => msg.shielded_transfer,
+            IbcMessage::NftTransfer(msg) => msg.shielded_transfer,
             _ => return Ok(()),
         };
         if let Some(shielded_transfer) = shielded_transfer {
@@ -353,28 +342,25 @@ pub enum IbcMessage {
     Transfer(MsgTransfer),
     /// NFT transfer
     NftTransfer(MsgNftTransfer),
-    /// Ibc shielded transfer
-    ShieldedTransfer(MsgShieldedTransfer),
 }
 
 /// Tries to decode transaction data to an `IbcMessage`
 pub fn decode_message(tx_data: &[u8]) -> Result<IbcMessage, Error> {
     // ibc-rs message
     if let Ok(any_msg) = Any::decode(tx_data) {
-        if let Ok(transfer_msg) = MsgTransfer::try_from(any_msg.clone()) {
-            return Ok(IbcMessage::Transfer(transfer_msg));
-        }
-        if let Ok(transfer_msg) = MsgNftTransfer::try_from(any_msg.clone()) {
-            return Ok(IbcMessage::NftTransfer(transfer_msg));
-        }
         if let Ok(envelope) = MsgEnvelope::try_from(any_msg) {
             return Ok(IbcMessage::Envelope(envelope));
         }
     }
 
-    // Message with Transfer for the shielded transfer
-    if let Ok(msg) = MsgShieldedTransfer::try_from_slice(tx_data) {
-        return Ok(IbcMessage::ShieldedTransfer(msg));
+    // Transfer message with `IbcShieldedTransfer`
+    if let Ok(msg) = MsgTransfer::try_from_slice(tx_data) {
+        return Ok(IbcMessage::Transfer(msg));
+    }
+
+    // NFT transfer message with `IbcShieldedTransfer`
+    if let Ok(msg) = MsgNftTransfer::try_from_slice(tx_data) {
+        return Ok(IbcMessage::NftTransfer(msg));
     }
 
     Err(Error::DecodingData)
