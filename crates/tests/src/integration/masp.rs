@@ -8247,7 +8247,7 @@ fn speculative_context() -> Result<()> {
     // Generate the shielded wallet in a fixed path to retrieve it later
     let mut shielded_wallet = FsShieldedUtils::new(node.genesis_dir());
     // Assert that the shielded history is empty
-    assert!(shielded_wallet.shielded_history.is_empty());
+    assert!(shielded_wallet.history.is_empty());
 
     _ = node.next_masp_epoch();
 
@@ -8319,8 +8319,8 @@ fn speculative_context() -> Result<()> {
     rt.block_on(shielded_wallet.load_confirmed());
     // Assert that the shielded history has been updated with the corresponding
     // entries
-    assert_eq!(shielded_wallet.shielded_history.len(), 1);
-    let aa_history = shielded_wallet.shielded_history.first().unwrap().1;
+    assert_eq!(shielded_wallet.history.len(), 1);
+    let aa_history = shielded_wallet.history.first().unwrap().1;
     assert_eq!(aa_history.len(), 2);
     let first_aa_history_entry = aa_history
         .get(&IndexedTx {
@@ -8399,8 +8399,8 @@ fn speculative_context() -> Result<()> {
     // Load the updated shielded wallet
     rt.block_on(shielded_wallet.load_confirmed());
     // Assert that the shielded history has not been updated
-    assert_eq!(shielded_wallet.shielded_history.len(), 1);
-    let aa_history = shielded_wallet.shielded_history.first().unwrap().1;
+    assert_eq!(shielded_wallet.history.len(), 1);
+    let aa_history = shielded_wallet.history.first().unwrap().1;
     assert_eq!(aa_history.len(), 2);
 
     // 5. Try to spend some amount from the remaining note with a tx that will
@@ -8455,8 +8455,8 @@ fn speculative_context() -> Result<()> {
     // Load the updated shielded wallet
     rt.block_on(shielded_wallet.load_confirmed());
     // Assert that the shielded history has not been updated
-    assert_eq!(shielded_wallet.shielded_history.len(), 1);
-    let aa_history = shielded_wallet.shielded_history.first().unwrap().1;
+    assert_eq!(shielded_wallet.history.len(), 1);
+    let aa_history = shielded_wallet.history.first().unwrap().1;
     assert_eq!(aa_history.len(), 2);
 
     // 7. Try to spend some amount from the remaining note
@@ -8508,8 +8508,8 @@ fn speculative_context() -> Result<()> {
     // Load the updated shielded wallet
     rt.block_on(shielded_wallet.load_confirmed());
     // Assert that the shielded history has not been updated
-    assert_eq!(shielded_wallet.shielded_history.len(), 1);
-    let aa_history = shielded_wallet.shielded_history.first().unwrap().1;
+    assert_eq!(shielded_wallet.history.len(), 1);
+    let aa_history = shielded_wallet.history.first().unwrap().1;
     assert_eq!(aa_history.len(), 2);
 
     // 9. Finally, sync the shielded context and check the confirmed balances
@@ -8564,8 +8564,8 @@ fn speculative_context() -> Result<()> {
     rt.block_on(shielded_wallet.load_confirmed());
     // Assert that the shielded history has been updated with the corresponding
     // entries
-    assert_eq!(shielded_wallet.shielded_history.len(), 2);
-    let aa_history = shielded_wallet.shielded_history.first().unwrap().1;
+    assert_eq!(shielded_wallet.history.len(), 2);
+    let aa_history = shielded_wallet.history.first().unwrap().1;
     assert_eq!(aa_history.len(), 4);
     let third_aa_history_entry = aa_history
         .get(&IndexedTx {
@@ -8601,7 +8601,7 @@ fn speculative_context() -> Result<()> {
             .into_iter()
             .collect();
     assert_eq!(expected_outputs, fourth_aa_history_entry.outputs);
-    let ab_history = shielded_wallet.shielded_history.get_index(1).unwrap().1;
+    let ab_history = shielded_wallet.history.get_index(1).unwrap().1;
     assert_eq!(ab_history.len(), 2);
     let first_ab_history_entry = ab_history
         .get(&IndexedTx {
@@ -9508,7 +9508,7 @@ fn multiple_inputs_from_single_note() -> Result<()> {
 // Test that the shielded wallet constructs the correct history of MASP
 // transactions for its keys
 #[test]
-fn shielded_history() -> Result<()> {
+fn history() -> Result<()> {
     let rt = tokio::runtime::Runtime::new().unwrap();
 
     // This address doesn't matter for tests. But an argument is required.
@@ -9520,7 +9520,7 @@ fn shielded_history() -> Result<()> {
     let mut shielded_wallet = FsShieldedUtils::new(node.genesis_dir());
 
     // Assert that the shielded history is empty
-    assert!(shielded_wallet.shielded_history.is_empty());
+    assert!(shielded_wallet.history.is_empty());
 
     // Wait till epoch boundary
     node.next_masp_epoch();
@@ -9578,7 +9578,7 @@ fn shielded_history() -> Result<()> {
     // Load the updated shielded wallet and check that the history is empty
     // since we haven't run shielded-sync yet
     rt.block_on(shielded_wallet.load_confirmed());
-    assert!(shielded_wallet.shielded_history.is_empty());
+    assert!(shielded_wallet.history.is_empty());
 
     // sync the shielded context
     run(
@@ -9653,8 +9653,8 @@ fn shielded_history() -> Result<()> {
     rt.block_on(shielded_wallet.load_confirmed());
     // Assert that the shielded history has been updated with the corresponding
     // entries
-    assert_eq!(shielded_wallet.shielded_history.len(), 1);
-    let aa_history = shielded_wallet.shielded_history.first().unwrap().1;
+    assert_eq!(shielded_wallet.history.len(), 1);
+    let aa_history = shielded_wallet.history.first().unwrap().1;
     assert_eq!(aa_history.len(), 2);
     let nam_aa_history_entry = aa_history
         .get(&IndexedTx {
@@ -9804,9 +9804,9 @@ fn shielded_history() -> Result<()> {
     rt.block_on(shielded_wallet.load_confirmed());
     // Assert that the shielded history has been updated with the corresponding
     // entries
-    assert_eq!(shielded_wallet.shielded_history.len(), 2);
-    let aa_history = shielded_wallet.shielded_history.first().unwrap().1;
-    let ab_history = shielded_wallet.shielded_history.get_index(1).unwrap().1;
+    assert_eq!(shielded_wallet.history.len(), 2);
+    let aa_history = shielded_wallet.history.first().unwrap().1;
+    let ab_history = shielded_wallet.history.get_index(1).unwrap().1;
     assert_eq!(aa_history.len(), 3);
     assert_eq!(ab_history.len(), 1);
     let nam_aa_history_entry = aa_history
@@ -9848,7 +9848,7 @@ fn shielded_history() -> Result<()> {
 
 // Test that shielded history entries flag the presence of conversions when used
 #[test]
-fn shielded_history_with_conversions() -> Result<()> {
+fn history_with_conversions() -> Result<()> {
     let rt = tokio::runtime::Runtime::new().unwrap();
 
     // This address doesn't matter for tests. But an argument is required.
@@ -9860,7 +9860,7 @@ fn shielded_history_with_conversions() -> Result<()> {
     let mut shielded_wallet = FsShieldedUtils::new(node.genesis_dir());
 
     // Assert that the shielded history is empty
-    assert!(shielded_wallet.shielded_history.is_empty());
+    assert!(shielded_wallet.history.is_empty());
 
     // Let us now start minting NAM rewards for BTC in the shielded pool
     let token_map_key = masp_token_map_key();
@@ -9919,7 +9919,7 @@ fn shielded_history_with_conversions() -> Result<()> {
     // Load the updated shielded wallet and check that the history is empty
     // since we haven't run shielded-sync yet
     rt.block_on(shielded_wallet.load_confirmed());
-    assert!(shielded_wallet.shielded_history.is_empty());
+    assert!(shielded_wallet.history.is_empty());
 
     // sync the shielded context
     run(
@@ -9957,8 +9957,8 @@ fn shielded_history_with_conversions() -> Result<()> {
     rt.block_on(shielded_wallet.load_confirmed());
     // Assert that the shielded history has been updated with the corresponding
     // entries
-    assert_eq!(shielded_wallet.shielded_history.len(), 1);
-    let aa_history = shielded_wallet.shielded_history.first().unwrap().1;
+    assert_eq!(shielded_wallet.history.len(), 1);
+    let aa_history = shielded_wallet.history.first().unwrap().1;
     assert_eq!(aa_history.len(), 1);
     let btc_aa_history_entry = aa_history
         .get(&IndexedTx {
@@ -10105,8 +10105,8 @@ fn shielded_history_with_conversions() -> Result<()> {
     rt.block_on(shielded_wallet.load_confirmed());
     // Assert that the shielded history has been updated with the corresponding
     // entries
-    assert_eq!(shielded_wallet.shielded_history.len(), 2);
-    let aa_history = shielded_wallet.shielded_history.first().unwrap().1;
+    assert_eq!(shielded_wallet.history.len(), 2);
+    let aa_history = shielded_wallet.history.first().unwrap().1;
     assert_eq!(aa_history.len(), 2);
     let btc_aa_history_entry = aa_history
         .get(&IndexedTx {
@@ -10127,7 +10127,7 @@ fn shielded_history_with_conversions() -> Result<()> {
     assert_eq!(expected_outputs, btc_aa_history_entry.outputs);
     assert!(btc_aa_history_entry.conversions);
 
-    let ab_history = shielded_wallet.shielded_history.get_index(1).unwrap().1;
+    let ab_history = shielded_wallet.history.get_index(1).unwrap().1;
     assert_eq!(ab_history.len(), 1);
     let btc_ab_history_entry = ab_history
         .get(&IndexedTx {
