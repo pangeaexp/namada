@@ -211,7 +211,10 @@ where
 }
 
 /// Getting the block height. The height is that of the block to which the
-/// current transaction is being applied.
+/// current transaction is being applied if we are in between the
+/// `FinalizeBlock` and the `Commit` phases. For all the other phases we return
+/// the block height of next block that the consensus process will decide upon
+/// (i.e. the block height of the last committed block + 1)
 pub fn get_block_height<S>(
     gas_meter: &RefCell<VpGasMeter>,
     state: &S,
@@ -219,8 +222,13 @@ pub fn get_block_height<S>(
 where
     S: StateRead + Debug,
 {
-    let (height, gas) = state.in_mem().get_block_height();
+    let (mut height, gas) = state.in_mem().get_block_height();
     add_gas(gas_meter, gas)?;
+    if state.in_mem().header.is_none() {
+        // When not finalizing a decided block, increase the block height to
+        // match that of the next block that will be proposed
+        height = height.next_height();
+    }
     Ok(height)
 }
 
