@@ -238,8 +238,6 @@ where
     }
 
     /// Get the current (yet to be committed) block epoch
-    // FIXME: should fix this too? Probably yes and update the docstring
-    // FIXME: also look for the usage of this
     pub fn get_current_epoch(&self) -> (Epoch, Gas) {
         // Adding consts that cannot overflow
         #[allow(clippy::arithmetic_side_effects)]

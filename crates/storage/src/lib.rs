@@ -104,7 +104,6 @@ pub trait StorageRead {
 
     /// Getting the block epoch. The epoch is that of the block to which the
     /// current transaction is being applied.
-    // FIXME: should fix this too? Probably yes
     fn get_block_epoch(&self) -> Result<Epoch>;
 
     /// Given the information about predecessor block epochs

@@ -1198,8 +1198,6 @@ where
         Ok(tree)
     }
 
-    // FIXME: unsafe, should probably move this to the mempool file to avoid
-    // calling it from other places
     /// Get the timestamp of the last committed block, or the current local
     /// timestamp if no blocks have been produced yet
     pub fn get_last_block_timestamp(&self) -> Result<DateTimeUtc> {
