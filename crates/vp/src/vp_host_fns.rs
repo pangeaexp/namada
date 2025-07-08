@@ -222,13 +222,8 @@ pub fn get_block_height<S>(
 where
     S: StateRead + Debug,
 {
-    let (mut height, gas) = state.in_mem().get_block_height();
+    let (height, gas) = state.in_mem().get_block_height();
     add_gas(gas_meter, gas)?;
-    if state.in_mem().header.is_none() {
-        // When not finalizing a decided block, increase the block height to
-        // match that of the next block that will be proposed
-        height = height.next_height();
-    }
     Ok(height)
 }
 

@@ -4734,10 +4734,8 @@ fn masp_tx_expiration_first_invalid_block_height() -> Result<()> {
     let wrapper_hash = tx.wrapper_hash();
     let inner_cmt = tx.first_commitments().unwrap();
 
-    // Skip blocks to ensure expiration. Remove one from the expiry height: the
-    // block building process will add two back leading to the block height
-    // exceeding the height limit by 1
-    while u64::from(node.block_height()) < (u64::from(masp_expiry_height) - 1) {
+    // Skip blocks to ensure expiration
+    while u64::from(node.block_height()) < u64::from(masp_expiry_height) {
         node.finalize_and_commit(None);
     }
     node.clear_results();
@@ -4921,10 +4919,8 @@ fn masp_tx_expiration_first_invalid_block_height_with_fee_payment() -> Result<()
     );
     tx.sign_wrapper(sk.clone());
 
-    // Skip blocks to ensure expiration. Remove one from the expiry height: the
-    // block building process will add two back leading to the block height
-    // exceeding the height limit by 1
-    while u64::from(node.block_height()) < (u64::from(masp_expiry_height) - 1) {
+    // Skip blocks to ensure expiration
+    while u64::from(node.block_height()) < u64::from(masp_expiry_height) {
         node.finalize_and_commit(None);
     }
     node.clear_results();
@@ -5088,10 +5084,10 @@ fn masp_tx_expiration_last_valid_block_height() -> Result<()> {
     let wrapper_hash = tx.wrapper_hash();
     let inner_cmt = tx.first_commitments().unwrap();
 
-    // Skip enough blocks to get to the expiry height. Remove two from the
-    // expiry height cause those will be added back in the process of producing
+    // Skip enough blocks to get to the expiry height. Remove one from the
+    // expiry height cause that will be added back in the process of producing
     // the block with the masp tx
-    while u64::from(node.block_height()) < (u64::from(masp_expiry_height) - 2) {
+    while u64::from(node.block_height()) < (u64::from(masp_expiry_height) - 1) {
         node.finalize_and_commit(None);
     }
 
