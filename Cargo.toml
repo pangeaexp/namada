@@ -61,7 +61,7 @@ homepage = "https://namada.net/"
 keywords = ["blockchain", "privacy", "crypto", "protocol", "network"]
 license = "GPL-3.0"
 readme = "README.md"
-repository = "https://github.com/anoma/namada"
+repository = "https://github.com/namada-net/namada"
 version = "0.150.0"
 rust-version = "1.83" # MSRV
 
