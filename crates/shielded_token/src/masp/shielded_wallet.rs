@@ -1160,7 +1160,11 @@ pub trait ShieldedApi<U: ShieldedUtils + MaybeSend + MaybeSync>:
                     Self::query_block(context.client())
                         .await
                         .map_err(|e| TransferErr::General(e.to_string()))?
-                        .unwrap_or(1),
+                        .ok_or_else(|| {
+                            TransferErr::General(
+                                "No blocks have been produced yet".to_string(),
+                            )
+                        })?,
                 )
                 .map_err(|e| TransferErr::General(e.to_string()))?;
                 let max_block_time =
