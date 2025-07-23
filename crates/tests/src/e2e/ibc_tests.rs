@@ -1296,7 +1296,7 @@ fn ibc_unlimited_channel() -> Result<()> {
     // Check if Namada hasn't received it
     check_balance(&test, ALBERT, &ibc_denom_on_namada, 0)?;
 
-    // Try to transfer from Namada, but it should be timed out
+    // Try to transfer from Namada, but it should be rejected
     let gaia_receiver = find_cosmos_address(&test_gaia, COSMOS_USER)?;
     transfer(
         &test,
@@ -1307,21 +1307,15 @@ fn ibc_unlimited_channel() -> Result<()> {
         Some(ALBERT_KEY),
         &port_id_namada,
         &channel_id_namada,
-        Some(Duration::new(10, 0)),
         None,
         None,
+        // expect an error of the throughput limit
+        Some(
+            "Transfer exceeding the per-epoch throughput limit is not allowed",
+        ),
         None,
         false,
     )?;
-    wait_for_packet_relay(
-        &hermes_dir,
-        &port_id_namada,
-        &channel_id_namada,
-        &test,
-    )?;
-
-    // Check if the token was refunded
-    check_balance(&test, ALBERT, APFEL, 1_000_000)?;
 
     // Proposal on Namada
     // Delegate some token
@@ -1357,7 +1351,7 @@ fn ibc_unlimited_channel() -> Result<()> {
         &port_id_gaia,
         &channel_id_gaia,
         None,
-        Some(Duration::new(10, 0)),
+        None,
     )?;
     wait_for_packet_relay(&hermes_dir, &port_id_gaia, &channel_id_gaia, &test)?;
 
@@ -1374,7 +1368,7 @@ fn ibc_unlimited_channel() -> Result<()> {
         Some(ALBERT_KEY),
         &port_id_namada,
         &channel_id_namada,
-        Some(Duration::new(10, 0)),
+        None,
         None,
         None,
         None,
