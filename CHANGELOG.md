@@ -1,5 +1,24 @@
 # CHANGELOG
 
+## v201.0.1
+
+Namada apps v201.0.1 patch release
+
+### FEATURES
+
+- Allow unlimited transfers through a specified channel
+  ([\#4762](https://github.com/anoma/namada/issues/4762))
+
+### IMPROVEMENTS
+
+- Changed the note selection algorithm to try and reduce the number of notes used
+  in MASP transactions. ([\#4748](https://github.com/anoma/namada/pull/4748))
+
+### MISCELLANEOUS
+
+- Updated to Rust edition 2024 and increased the MSRV to 1.85.
+  ([\#4523](https://github.com/anoma/namada/pull/4523))
+
 ## v201.0.0
 
 Namada apps v201.0.0 Consensus breaking release.
@@ -97,6 +116,25 @@ Namada v1.0.0 is the first stable release of the Namada apps.
 
 - updated namada libraries to libs-v0.46.1
   ([\#4123](https://github.com/anoma/namada/pull/4123))
+
+## libs-v0.251.1
+
+Namada libs v0.251.1 minor release.
+
+### IMPROVEMENTS
+
+- Changed the note selection algorithm to try and reduce the number of notes used
+  in MASP transactions. ([\#4748](https://github.com/anoma/namada/pull/4748))
+
+### MISCELLANEOUS
+
+- Updated to Rust edition 2024 and increased the MSRV to 1.85.
+  ([\#4523](https://github.com/anoma/namada/pull/4523))
+
+### TESTING
+
+- Avoid flakiness in IBC e2e tests
+  ([\#4553](https://github.com/anoma/namada/issues/4553))
 
 ## libs-v0.251.0
 
