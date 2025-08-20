@@ -1,5 +1,24 @@
 # CHANGELOG
 
+## v201.0.3
+
+Namada apps v201.0.3
+
+### IMPROVEMENTS
+
+- Uses the new published version of our sparse merkle tree that speeds up
+  validation times. This should speed up the time it takes to start a node.
+  ([\#4791](https://github.com/anoma/namada/pull/4791))
+
+## v201.0.2
+
+Namada apps v201.0.2.
+
+### BUG FIXES
+
+- Always allocate for the initial data to allow to execute larger WASMs
+  ([\#4786](https://github.com/anoma/namada/pull/4786))
+
 ## v201.0.1
 
 Namada apps v201.0.1 patch release
